@@ -1,8 +1,16 @@
 import { useRef } from "react";
 import "./App.css";
 
-import Editor, { type OnChange, type OnMount } from "@monaco-editor/react";
-import { KeyCode, KeyMod, type editor as MonacoEditor, Range } from "monaco-editor";
+import Editor, { loader, type Monaco, type OnChange, type OnMount } from "@monaco-editor/react";
+import { KeyCode, KeyMod, type editor as MonacoEditor, Range as MonacoRange } from "monaco-editor";
+
+loader.config({
+	"vs/nls": {
+		availableLanguages: {
+			"*": "ja",
+		},
+	},
+});
 
 const exampleText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. これは日本語のテキストです。
 Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
@@ -12,11 +20,15 @@ ullamco laboris nisi ut aliquip ex ea commodo consequat.
 
 function App() {
 	const editorRef = useRef<MonacoEditor.IStandaloneCodeEditor>();
+	// const [decorationIds, setDecorationIds] = useState<string[]>([]);
 	const decorationsRef = useRef<MonacoEditor.IEditorDecorationsCollection>();
+	const monacoRef = useRef<Monaco | null>(null);
+
 	// エディタがマウントされたときにインスタンスを取得
-	const handleEditorDidMount: OnMount = (editor, _monaco) => {
+	const handleEditorDidMount: OnMount = (editor, monaco) => {
 		console.log(editor);
 		editorRef.current = editor;
+		monacoRef.current = monaco;
 
 		// デコレーションコレクションを作成
 		decorationsRef.current = editor.createDecorationsCollection([]);
@@ -38,12 +50,45 @@ function App() {
 		console.log("Editor content changed:", value);
 	};
 
+	// // エラーデコレーションを追加する関数
+	// const addErrorDecoration = () => {
+	// 	if (editorRef.current && monacoRef.current) {
+	// 		const monaco = monacoRef.current;
+	// 		const model = editorRef.current.getModel();
+	// 		if (model) {
+	// 			const markers = [
+	// 				{
+	// 					startLineNumber: 2,
+	// 					startColumn: 3,
+	// 					endLineNumber: 2,
+	// 					endColumn: 10,
+	// 					message: "This is an error",
+	// 					severity: monaco.MarkerSeverity.Error,
+	// 				},
+	// 			];
+	// 			monaco.editor.setModelMarkers(model, "owner", markers);
+	// 		}
+	// 	}
+	// };
+
+	// // エラーデコレーションをリセットする関数
+	// const resetErrorDecoration = () => {
+	// 	if (editorRef.current && monacoRef.current) {
+	// 		const monaco = monacoRef.current;
+	// 		const model = editorRef.current.getModel();
+	// 		if (model) {
+	// 			monaco.editor.setModelMarkers(model, "owner", []);
+	// 		}
+	// 	}
+	// };
+
 	// // エラーデコレーションを追加する関数 (deltaDecorations()が非推奨)
+	// // 使うとビルドサイズが30倍ぐらい増える
 	// const addErrorDecoration = () => {
 	// 	if (editorRef.current) {
 	// 		const decorations = [
 	// 			{
-	// 				range: new Range(2, 3, 2, 10), // エラー範囲（行、列で指定）
+	// 				range: new MonacoRange(2, 3, 2, 10), // エラー範囲（行、列で指定）
 	// 				options: {
 	// 					isWholeLine: false,
 	// 					className: "myErrorDecoration",
@@ -53,16 +98,24 @@ function App() {
 	// 				},
 	// 			},
 	// 		];
-	// 		editorRef.current.deltaDecorations([], decorations);
+	// 		const newDecorationIds = editorRef.current.deltaDecorations(decorationIds, decorations);
+	// 		setDecorationIds(newDecorationIds);
+	// 	}
+	// };
+	// const resetErrorDecoration = () => {
+	// 	if (editorRef.current) {
+	// 		const clearedDecorationIds = editorRef.current.deltaDecorations(decorationIds, []);
+	// 		setDecorationIds(clearedDecorationIds);
 	// 	}
 	// };
 
 	// デコレーションコレクションを追加する関数
+	// ただしこっちを使うとビルドサイズが30倍ぐらい増える
 	const addErrorDecoration = () => {
 		if (editorRef.current && decorationsRef.current) {
 			const newDecorations: MonacoEditor.IModelDeltaDecoration[] = [
 				{
-					range: new Range(2, 3, 2, 10), // エラー範囲（行、列で指定）
+					range: new MonacoRange(2, 3, 2, 10), // エラー範囲（行、列で指定）
 					options: {
 						isWholeLine: false,
 						className: "myErrorDecoration",
