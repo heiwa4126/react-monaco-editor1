@@ -12,20 +12,7 @@ export default defineConfig({
 		// 	languageWorkers: ["typescript", "json"],
 		// }),
 		cdn({
-			modules: [
-				"react",
-				"react-dom",
-				// {
-				// 	name: "monaco-editor",
-				// 	var: "monaco-editor",
-				// 	path: "min/vs/editor/editor.main.min.js",
-				// },
-				// {
-				// 	name: "@monaco-editor/react",
-				// 	var: "Editor",
-				// 	path: "dist/index.min.js",
-				// },
-			],
+			modules: ["react", "react-dom"],
 		}),
 	],
 	build: {
