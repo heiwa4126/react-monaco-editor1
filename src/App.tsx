@@ -2,11 +2,13 @@ import { useRef } from "react";
 import "./App.css";
 
 import Editor, { type OnMount } from "@monaco-editor/react";
-import { type editor as MonacoEditor, Range } from "monaco-editor";
+import { KeyCode, KeyMod, type editor as MonacoEditor, Range } from "monaco-editor";
 
 const exampleText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. これは日本語のテキストです。
 Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-ullamco laboris nisi ut aliquip ex ea commodo consequat. さらに日本語のテキストが続きます。Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`;
+ullamco laboris nisi ut aliquip ex ea commodo consequat.
+ さらに日本語のテキストが続きます。Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+ Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`;
 
 function App() {
 	const editorRef = useRef<MonacoEditor.IStandaloneCodeEditor>();
@@ -14,6 +16,11 @@ function App() {
 	const handleEditorDidMount: OnMount = (editor, _monaco) => {
 		console.log(editor);
 		editorRef.current = editor;
+
+		// Ctrl + EnterにReactの関数をバインド
+		editor.addCommand(KeyMod.CtrlCmd | KeyCode.Enter, () => {
+			showValue(); // Ctrl + Enterが押された時に呼び出される関数
+		});
 	};
 
 	function showValue() {
@@ -22,7 +29,7 @@ function App() {
 		}
 	}
 
-	// エラーデコレーションを追加する関数
+	// エラーデコレーションを追加する関数 (deltaDecorations()が非推奨)
 	const addErrorDecoration = () => {
 		if (editorRef.current) {
 			const decorations = [
@@ -66,7 +73,7 @@ function App() {
 			</div>
 
 			<button type="button" onClick={() => showValue()}>
-				Show value
+				Show value (console.log())
 			</button>
 			<button type="button" onClick={() => addErrorDecoration()}>
 				Show error decoration
