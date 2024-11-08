@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import "./App.css";
 
-import Editor, { type OnMount } from "@monaco-editor/react";
+import Editor, { type OnChange, type OnMount } from "@monaco-editor/react";
 import { KeyCode, KeyMod, type editor as MonacoEditor, Range } from "monaco-editor";
 
 const exampleText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. これは日本語のテキストです。
@@ -28,6 +28,11 @@ function App() {
 			console.log(editorRef.current.getValue());
 		}
 	}
+
+	// エディタのテキストが変更されたときに呼ばれる関数
+	const handleEditorChange: OnChange = (value) => {
+		console.log("Editor content changed:", value);
+	};
 
 	// エラーデコレーションを追加する関数 (deltaDecorations()が非推奨)
 	const addErrorDecoration = () => {
@@ -63,6 +68,7 @@ function App() {
 					defaultLanguage="plaintext"
 					defaultValue={exampleText}
 					onMount={handleEditorDidMount}
+					onChange={handleEditorChange}
 					options={{
 						minimap: { enabled: false },
 						lineNumbers: "on",
