@@ -12,10 +12,14 @@ ullamco laboris nisi ut aliquip ex ea commodo consequat.
 
 function App() {
 	const editorRef = useRef<MonacoEditor.IStandaloneCodeEditor>();
+	const decorationsRef = useRef<MonacoEditor.IEditorDecorationsCollection>();
 	// エディタがマウントされたときにインスタンスを取得
 	const handleEditorDidMount: OnMount = (editor, _monaco) => {
 		console.log(editor);
 		editorRef.current = editor;
+
+		// デコレーションコレクションを作成
+		decorationsRef.current = editor.createDecorationsCollection([]);
 
 		// Ctrl + EnterにReactの関数をバインド
 		editor.addCommand(KeyMod.CtrlCmd | KeyCode.Enter, () => {
@@ -34,10 +38,29 @@ function App() {
 		console.log("Editor content changed:", value);
 	};
 
-	// エラーデコレーションを追加する関数 (deltaDecorations()が非推奨)
+	// // エラーデコレーションを追加する関数 (deltaDecorations()が非推奨)
+	// const addErrorDecoration = () => {
+	// 	if (editorRef.current) {
+	// 		const decorations = [
+	// 			{
+	// 				range: new Range(2, 3, 2, 10), // エラー範囲（行、列で指定）
+	// 				options: {
+	// 					isWholeLine: false,
+	// 					className: "myErrorDecoration",
+	// 					inlineClassName: "myErrorDecorationInline",
+	// 					glyphMarginClassName: "myErrorGlyphMargin",
+	// 					hoverMessage: { value: "This is an error" },
+	// 				},
+	// 			},
+	// 		];
+	// 		editorRef.current.deltaDecorations([], decorations);
+	// 	}
+	// };
+
+	// デコレーションコレクションを追加する関数
 	const addErrorDecoration = () => {
-		if (editorRef.current) {
-			const decorations = [
+		if (editorRef.current && decorationsRef.current) {
+			const newDecorations: MonacoEditor.IModelDeltaDecoration[] = [
 				{
 					range: new Range(2, 3, 2, 10), // エラー範囲（行、列で指定）
 					options: {
@@ -50,7 +73,14 @@ function App() {
 				},
 			];
 
-			editorRef.current.deltaDecorations([], decorations);
+			// デコレーションコレクションを更新
+			decorationsRef.current.set(newDecorations);
+		}
+	};
+	const resetErrorDecoration = () => {
+		if (editorRef.current && decorationsRef.current) {
+			// デコレーションコレクションを更新
+			decorationsRef.current.set([]);
 		}
 	};
 
@@ -83,6 +113,9 @@ function App() {
 			</button>
 			<button type="button" onClick={() => addErrorDecoration()}>
 				Show error decoration
+			</button>
+			<button type="button" onClick={() => resetErrorDecoration()}>
+				Reset error decoration
 			</button>
 		</>
 	);
