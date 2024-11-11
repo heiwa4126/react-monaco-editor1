@@ -1,13 +1,20 @@
-/* */
 .myErrorDecoration {
-	background-color: rgba(255, 0, 0, 0.3); /* エラー背景色 */
+	 /* background-color: rgba(255, 0, 0, 0.3); */
+	@apply bg-red-500 bg-opacity-30; /* エラー背景色 */
 }
 .myErrorDecorationInline {
-	text-decoration: underline wavy red; /* 波線を追加 */
+	/* text-decoration: underline wavy red; */
+	@apply underline decoration-wavy decoration-red-500; /* 波線を追加 */
+
 }
 .myErrorGlyphMargin {
-	background: red;
+	/* background: red;
 	width: 5px;
 	height: 5px;
-	border-radius: 50%;
+	border-radius: 50%; */
+	@apply bg-red-500 w-1 h-1 rounded-full;
+}
+
+button[type="button"] {
+	@apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-0 px-1 border border-gray-400 rounded shadow;
 }
