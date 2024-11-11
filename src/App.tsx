@@ -1,8 +1,9 @@
 import { useRef } from "react";
 import "./App.css";
 
-import Editor, { loader, type Monaco, type OnChange, type OnMount } from "@monaco-editor/react";
-import { KeyCode, KeyMod, type editor as MonacoEditor, Range as MonacoRange } from "monaco-editor";
+import Editor, { loader, type OnChange, type OnMount } from "@monaco-editor/react";
+// import * as monaco from "monaco-editor";
+import { KeyCode, KeyMod, editor as MonacoEditor, Range as MonacoRange } from "monaco-editor";
 
 loader.config({
 	"vs/nls": {
@@ -22,13 +23,14 @@ function App() {
 	const editorRef = useRef<MonacoEditor.IStandaloneCodeEditor>();
 	// const [decorationIds, setDecorationIds] = useState<string[]>([]);
 	const decorationsRef = useRef<MonacoEditor.IEditorDecorationsCollection>();
-	const monacoRef = useRef<Monaco | null>(null);
+	// const monacoRef = useRef<Monaco | null>(null);
 
 	// エディタがマウントされたときにインスタンスを取得
-	const handleEditorDidMount: OnMount = (editor, monaco) => {
+	//const handleEditorDidMount: OnMount = (editor, monaco) => {
+	const handleEditorDidMount: OnMount = (editor) => {
 		console.log(editor);
 		editorRef.current = editor;
-		monacoRef.current = monaco;
+		// monacoRef.current = monaco;
 
 		// デコレーションコレクションを作成
 		decorationsRef.current = editor.createDecorationsCollection([]);
@@ -122,6 +124,10 @@ function App() {
 						inlineClassName: "myErrorDecorationInline",
 						glyphMarginClassName: "myErrorGlyphMargin",
 						hoverMessage: { value: "This is an error" },
+						overviewRuler: {
+							position: MonacoEditor.OverviewRulerLane.Left, // スクロールバー上に表示
+							color: "rgba(255,0,0,0.7)", // マークの色
+						},
 					},
 				},
 			];
