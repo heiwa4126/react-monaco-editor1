@@ -145,52 +145,31 @@ function App() {
 
 	return (
 		<>
-			<div className="flex space-x-2 mt-5">
-				<div className="flex-1">
-					<div
-						style={{
-							border: "2px solid #ccc",
-							borderRadius: "4px",
-							transition: "border-color 0.2s ease",
-						}}
-					>
-						<Editor
-							height="45vh"
-							defaultLanguage="plaintext"
-							defaultValue={exampleText}
-							onMount={handleEditorDidMount}
-							onChange={handleEditorChange}
-							options={{
-								minimap: { enabled: false },
-								lineNumbers: "on",
-								fontSize: 18,
-								lineHeight: 27,
-							}}
-						/>
-					</div>
-					<button type="button" className="btn" /* onClick={updateResult}> */>
-						更新 (Ctrl+Enter)
-					</button>
-				</div>
-				<div className="flex-none">
-					<div className="flex flex-col space-y-1">
-						<button type="button">←サンプル 0</button>
-						<button type="button">←サンプル 1</button>
-					</div>
-				</div>
+			<div className="editorBoarder mt-1">
+				<Editor
+					height="45vh"
+					defaultLanguage="plaintext"
+					defaultValue={exampleText}
+					onMount={handleEditorDidMount}
+					onChange={handleEditorChange}
+					options={{
+						minimap: { enabled: false },
+						lineNumbers: "on",
+						fontSize: 18,
+						lineHeight: 27,
+					}}
+				/>
 			</div>
 
-			<div className="mt-5">
-				<button type="button" onClick={() => showValue()}>
-					Show value (console.log())
-				</button>
-				<button type="button" onClick={() => addErrorDecoration()}>
-					Show error decoration
-				</button>
-				<button type="button" onClick={() => resetErrorDecoration()}>
-					Reset error decoration
-				</button>
-			</div>
+			<button type="button" onClick={() => showValue()}>
+				Show value (console.log())
+			</button>
+			<button type="button" onClick={() => addErrorDecoration()}>
+				Show error decoration
+			</button>
+			<button type="button" onClick={() => resetErrorDecoration()}>
+				Reset error decoration
+			</button>
 		</>
 	);
 }
